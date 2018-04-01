@@ -29,11 +29,11 @@
      border: none;
      border-radius: 5px;
      color: white;
-     padding: 10px;
+     padding: 5px;
      text-align: center;
      text-decoration: none;
      display: inline-block;
-     font-size: 1.2rem;
+     font-size: 1rem;
      margin: 4px 2px;
  }
  button.primary {
@@ -54,6 +54,9 @@
  input {
      height: 20px;
      padding: 10px;
+ }
+ a {
+     color: #77C4D3;
  }
  .flexWrapper {
      display:flex;

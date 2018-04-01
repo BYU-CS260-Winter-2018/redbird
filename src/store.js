@@ -94,6 +94,13 @@ export default new Vuex.Store({
       }).catch(err => {
 	console.log("addTweet failed:",err);
       });
+    },
+    doSearch(context,keywords) {
+      axios.get("/api/tweets/search?keywords=" + keywords).then(response => {
+	context.commit('setFeed',response.data.tweets);
+      }).catch(err => {
+	console.log("doSearch failed:",err);
+      });
     }
   }
 });

@@ -97,7 +97,7 @@ app.delete('/api/users/:id', (req, res) => {
 });
 */
 
-// Tweets //
+// User Tweets //
 
 app.get('/api/users/:id/tweets', (req, res) => {
   let id = parseInt(req.params.id);
@@ -140,5 +140,29 @@ app.delete('/api/users/:id/tweets/:tweetId', (req, res) => {
   });
 });
 */
+
+// All Tweets //
+
+app.get('/api/tweets/search', (req, res) => {
+  if (!req.query.keywords)
+    return res.status(400).send();
+  let offset = 0;
+  if (req.query.offset)
+    offset = parseInt(req.query.offset);
+  let limit = 50;
+  if (req.query.limit)
+    limit = parseInt(req.query.limit);
+  knex('users').join('tweets','users.id','tweets.user_id')
+    .whereRaw("MATCH (tweet) AGAINST('" + req.query.keywords + "')")
+    .orderBy('created','desc')
+    .limit(limit)
+    .offset(offset)
+    .select('tweet','username','name','created').then(tweets => {
+      res.status(200).json({tweets:tweets});
+    }).catch(error => {
+      res.status(500).json({ error });
+    });
+});
+
 
 app.listen(3000, () => console.log('Server listening on port 3000!'));
