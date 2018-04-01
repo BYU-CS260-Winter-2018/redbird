@@ -22,14 +22,6 @@
      }
    },
    components: { FeedList },
-   created: function() {
-     this.$store.dispatch('getFeed');
-   },
-   computed: {
-     feed: function() {
-       return this.$store.getters.feed;
-     },
-   },
    methods: {
      tweet: function() {
        this.$store.dispatch('addTweet',{
