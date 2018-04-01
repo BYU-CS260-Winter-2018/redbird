@@ -1,7 +1,7 @@
 # Redbird Twitter Clone
 
 We are going to build a clone of Twitter over the course of several activities. This are all
-documented in the [Wiki](https://github.com/BYU-CS260-Winter-2018/redbird), day by day.
+documented in the [Wiki](https://github.com/BYU-CS260-Winter-2018/redbird/wiki), day by day.
 
 This application uses the [Vue webpack template](http://vuejs-templates.github.io/webpack/), so you
 you can do the following if you want to get started with the code here:
