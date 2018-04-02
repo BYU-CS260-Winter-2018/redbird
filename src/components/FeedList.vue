@@ -2,13 +2,14 @@
   <div>
     <div v-for="item in feed" class="item">
       <p class="idline"><span class="user">{{item.name}}</span><span class="handle">@{{item.username}}</span><span class="time">{{item.created | since}}</span></p>
-      <p class="tweet">{{item.tweet}}</p>
+      <p v-html="formatTweet(item.tweet)" class="tweet"></p>
     </div>
   </div>
 </template>
 
 <script>
  import moment from 'moment';
+ import linkify from './linkify.js';
  export default {
    name: 'FeedList',
    filters: {
@@ -37,6 +38,13 @@
    computed: {
      feed: function() {
        return this.$store.getters.feed;
+     },
+   },
+   methods: {
+     formatTweet: function(text) {
+       return linkify(text, {
+         defaultProtocol: 'https'
+       });
      },
    },
  }

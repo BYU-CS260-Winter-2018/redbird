@@ -22,6 +22,9 @@
      }
    },
    components: { FeedList },
+   created: function() {
+     this.$store.dispatch('getFeed');
+   },
    methods: {
      tweet: function() {
        this.$store.dispatch('addTweet',{

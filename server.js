@@ -160,9 +160,30 @@ app.get('/api/tweets/search', (req, res) => {
     .select('tweet','username','name','created').then(tweets => {
       res.status(200).json({tweets:tweets});
     }).catch(error => {
+      console.log(error);
       res.status(500).json({ error });
     });
 });
+
+app.get('/api/tweets/hash/:hashtag', (req, res) => {
+  let offset = 0;
+  if (req.query.offset)
+    offset = parseInt(req.query.offset);
+  let limit = 50;
+  if (req.query.limit)
+    limit = parseInt(req.query.limit);
+  knex('users').join('tweets','users.id','tweets.user_id')
+    .whereRaw("tweet REGEXP '^#" + req.params.hashtag + "' OR tweet REGEXP ' #" + req.params.hashtag + "'")
+    .orderBy('created','desc')
+    .limit(limit)
+    .offset(offset)
+    .select('tweet','username','name','created').then(tweets => {
+      res.status(200).json({tweets:tweets});
+    }).catch(error => {
+      res.status(500).json({ error });
+    });
+});
+
 
 
 app.listen(3000, () => console.log('Server listening on port 3000!'));
