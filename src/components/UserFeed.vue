@@ -8,7 +8,7 @@
 	</div>
       </form>
     </div>
-    <feed-list/>
+    <feed-list v-bind:feed="feed" />
   </div>
 </template>
 
@@ -22,6 +22,11 @@
      }
    },
    components: { FeedList },
+   computed: {
+     feed: function() {
+       return this.$store.getters.feed;
+     },
+   },
    created: function() {
      this.$store.dispatch('getFeed');
    },

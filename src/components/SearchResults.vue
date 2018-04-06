@@ -2,7 +2,7 @@
   <div class="feed">
     <h1>Search Results</h1>
     <p>Searched for {{keywords}}</p>
-    <feed-list/>
+    <feed-list v-bind:feed="feed" />
   </div>
 </template>
 
@@ -15,6 +15,9 @@
      this.$store.dispatch('doSearch',this.$route.query.keywords);
    },
    computed: {
+     feed: function() {
+       return this.$store.getters.feed;
+     },
      keywords: function() {
        return this.$route.query.keywords;
      }

@@ -2,7 +2,7 @@
   <div class="feed">
     <h1>Hashtag Results</h1>
     <p>Searched for #{{hashtag}}</p>
-    <feed-list/>
+    <feed-list v-bind:feed="feed" />
   </div>
 </template>
 
@@ -15,6 +15,9 @@
      this.$store.dispatch('doHashTagSearch',this.$route.params.hashtag);
    },
    computed: {
+     feed: function() {
+       return this.$store.getters.feed;
+     },
      hashtag: function() {
        return this.$route.params.hashtag;
      }

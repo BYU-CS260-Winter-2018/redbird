@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-for="item in feed" class="item">
-      <p class="idline"><span class="user">{{item.name}}</span><span class="handle">@{{item.username}}</span><span class="time">{{item.created | since}}</span></p>
+      <p class="idline"><span class="user">{{item.name}}</span><router-link :to="{ name: 'UserPage', params: {userID: item.userID}}"><span class="handle">@{{item.username}}</span></router-link><span class="time">{{item.created | since}}</span></p>
       <p v-html="formatTweet(item.tweet)" class="tweet"></p>
     </div>
   </div>
@@ -12,6 +12,7 @@
  import linkify from './linkify.js';
  export default {
    name: 'FeedList',
+   props: ['feed'],
    filters: {
      since: function(datetime) {
        moment.locale('en', {
@@ -33,11 +34,6 @@
 	 }
        });
        return moment(datetime).fromNow();
-     },
-   },
-   computed: {
-     feed: function() {
-       return this.$store.getters.feed;
      },
    },
    methods: {

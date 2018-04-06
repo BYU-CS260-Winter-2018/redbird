@@ -7,8 +7,9 @@
 	<input v-model="keywords" placeholder="Search">
 	<a href="#" v-on:click="search" class="search"><i class="fas fa-search"></i></a>
       </form></li>
-      <li class="right" v-if="loggedIn"><a @click="logout" href="#">Logout</a></li>
-      <li class="right" v-if="loggedIn">{{user.username}}</li>
+      <li class="right" v-if="loggedIn">
+	<router-link :to="{ name: 'UserPage', params: {userID: user.id}}">{{user.username}}</router-link> <a @click="logout" href="#">Logout</a></p>
+      </li>
       <li class="right" v-else>
 	<form v-on:submit.prevent="login">
 	  <input v-model="email" placeholder="Email Address">
@@ -43,10 +44,16 @@
      loginError: function() {
        return this.$store.getters.loginError;
      },
+     numberFollowing: function() {
+       return this.$store.getters.following.length;
+     },
+     numberFollowers: function() {
+       return this.$store.getters.followers.length;
+     }
    },
    methods: {
      search: function() {
-       this.$router.push({ path: 'search', query: { keywords: this.keywords }})
+       this.$router.push({ path: '/search', query: { keywords: this.keywords }})
        this.keywords = '';
      },
      login: function() {

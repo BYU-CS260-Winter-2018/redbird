@@ -86,6 +86,10 @@ let deleteTweets = () => {
   return knex('tweets').del();
 }
 
+let deleteFollowers = () => {
+  return knex('followers').del();
+}
+
 let deleteUsers = () => {
   return knex('users').del();
 }
@@ -112,6 +116,8 @@ let insertTweets = () => {
 
 
 deleteTweets().then(() => {
+  return deleteFollowers();
+}).then(() => {
   return deleteUsers();
 }).then(() => {
   return insertUsers();
