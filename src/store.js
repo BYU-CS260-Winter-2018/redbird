@@ -5,6 +5,10 @@ import axios from 'axios';
 
 Vue.use(Vuex);
 
+const getAuthHeader = () => {
+  return { headers: {'Authorization': localStorage.getItem('token')}};
+}
+
 export default new Vuex.Store({
   state: {
     user: {},
@@ -22,9 +26,6 @@ export default new Vuex.Store({
   getters: {
     user: state => state.user,
     getToken: state => state.token,
-    getAuthHeader: state => {
-      return { headers: {'Authorization': localStorage.getItem('token')}};
-    },
     loggedIn: state => {
       if (state.token === '')
 	return false;
@@ -58,6 +59,7 @@ export default new Vuex.Store({
 	localStorage.removeItem('token');
       else
 	localStorage.setItem('token', token)
+      console.log(localStorage.getItem('token'));      
     },
     setLoginError (state, message) {
       state.loginError = message;
@@ -93,7 +95,7 @@ export default new Vuex.Store({
       let token = localStorage.getItem('token');
       if (token) {
 	// see if we can use the token to get my user account
-	axios.get("/api/me",context.getters.getAuthHeader).then(response => {
+	axios.get("/api/me",getAuthHeader()).then(response => {
 	  context.commit('setToken',token);
 	  context.commit('setUser',response.data.user);
 	}).catch(err => {
@@ -171,7 +173,7 @@ export default new Vuex.Store({
     },
     // Tweeting //
     addTweet(context,tweet) {
-      axios.post("/api/users/" + context.state.user.id + "/tweets",tweet,context.getters.getAuthHeader).then(response => {
+      axios.post("/api/users/" + context.state.user.id + "/tweets",tweet,getAuthHeader()).then(response => {
 	return context.dispatch('getFeed');
       }).catch(err => {
 	console.log("addTweet failed:",err);
@@ -196,7 +198,7 @@ export default new Vuex.Store({
 
     // follow someone, must supply {id: id} of user you want to follow
     follow(context,user) {
-      return axios.post("/api/users/" + context.state.user.id + "/follow",user,context.getters.getAuthHeader).then(response => {
+      return axios.post("/api/users/" + context.state.user.id + "/follow",user,getAuthHeader()).then(response => {
 	context.dispatch('getFollowing');
       }).catch(err => {
 	console.log("follow failed:",err);
@@ -204,7 +206,7 @@ export default new Vuex.Store({
     },
     // unfollow someone, must supply {id: id} of user you want to unfollow
     unfollow(context,user) {
-      return axios.delete("/api/users/" + context.state.user.id + "/follow/" + user.id,context.getters.getAuthHeader).then(response => {
+      return axios.delete("/api/users/" + context.state.user.id + "/follow/" + user.id,getAuthHeader()).then(response => {
 	context.dispatch('getFollowing');
       }).catch(err => {
 	console.log("unfollow failed:",err);
