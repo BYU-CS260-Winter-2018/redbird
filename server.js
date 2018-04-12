@@ -58,7 +58,6 @@ app.post('/api/login', (req, res) => {
       let token = jwt.sign({ id: user.id }, jwtSecret, {
 	expiresIn: '24h' // expires in 24 hours
       });
-      console.log("token",token);
       res.status(200).json({user:{username:user.username,name:user.name,id:user.id},token:token});
     } else {
       res.status(403).send("Invalid credentials");
