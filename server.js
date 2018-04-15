@@ -42,6 +42,18 @@ const verifyToken = (req, res, next) => {
   });
 }
 
+// multer setup
+const multer = require('multer');
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'static/uploads')
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${req.userID}-${Date.now()}-${file.originalname}`);
+  }
+});
+const upload = multer({storage: storage});
+
 // Login //
 
 app.post('/api/login', (req, res) => {
@@ -147,7 +159,7 @@ app.get('/api/users/:id/tweets', (req, res) => {
   knex('users').join('tweets','users.id','tweets.user_id')
     .where('users.id',id)
     .orderBy('created','desc')
-    .select('tweet','username','name','created').then(tweets => {
+    .select('tweet','username','name','created','image').then(tweets => {
       res.status(200).json({tweets:tweets});
     }).catch(error => {
       console.log(error);
@@ -155,14 +167,18 @@ app.get('/api/users/:id/tweets', (req, res) => {
     });
 });
 
-app.post('/api/users/:id/tweets', verifyToken, (req, res) => {
+app.post('/api/users/:id/tweets', verifyToken, upload.single('image'), (req, res) => {
   let id = parseInt(req.params.id);
   if (id !== req.userID) {
     res.status(403).send();
     return;
   }
+  // check for an image
+  let path = ''
+  if (req.file)
+    path = req.file.path;
   knex('users').where('id',id).first().then(user => {
-    return knex('tweets').insert({user_id: id, tweet:req.body.tweet, created: new Date()});
+    return knex('tweets').insert({user_id: id, tweet:req.body.tweet, created: new Date(), image:path});
   }).then(ids => {
     return knex('tweets').where('id',ids[0]).first();
   }).then(tweet => {
@@ -205,7 +221,7 @@ app.get('/api/tweets/search', (req, res) => {
     .orderBy('created','desc')
     .limit(limit)
     .offset(offset)
-    .select('tweet','username','name','created','users.id as userID').then(tweets => {
+    .select('tweet','username','name','created','image','users.id as userID').then(tweets => {
       res.status(200).json({tweets:tweets});
     }).catch(error => {
       console.log(error);
@@ -225,7 +241,7 @@ app.get('/api/tweets/hash/:hashtag', (req, res) => {
     .orderBy('created','desc')
     .limit(limit)
     .offset(offset)
-    .select('tweet','username','name','created','users.id as userID').then(tweets => {
+    .select('tweet','username','name','created','image','users.id as userID').then(tweets => {
       res.status(200).json({tweets:tweets});
     }).catch(error => {
       console.log(error);
@@ -347,7 +363,7 @@ app.get('/api/users/:id/feed', (req,res) => {
       .orderBy('created','desc')
       .limit(limit)
       .offset(offset)
-      .select('tweet','username','name','created','users.id as userID');
+      .select('tweet','username','name','created','image','users.id as userID');
   }).then(tweets => {
     res.status(200).json({tweets:tweets});
   }).catch(error => {

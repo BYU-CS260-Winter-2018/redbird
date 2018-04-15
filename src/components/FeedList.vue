@@ -3,6 +3,7 @@
     <div v-for="item in feed" class="item">
       <p class="idline"><span class="user">{{item.name}}</span><router-link :to="{ name: 'UserPage', params: {userID: item.userID}}"><span class="handle">@{{item.username}}</span></router-link><span class="time">{{item.created | since}}</span></p>
       <p v-html="formatTweet(item.tweet)" class="tweet"></p>
+      <img v-bind:src="item.image"/>
     </div>
   </div>
 </template>

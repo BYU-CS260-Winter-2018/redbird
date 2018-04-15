@@ -59,7 +59,6 @@ export default new Vuex.Store({
 	localStorage.removeItem('token');
       else
 	localStorage.setItem('token', token)
-      console.log(localStorage.getItem('token'));      
     },
     setLoginError (state, message) {
       state.loginError = message;
@@ -146,7 +145,6 @@ export default new Vuex.Store({
 	  context.commit('setRegisterError',"");
 	  return;
 	}
-	console.log(error);
 	context.commit('setLoginError',"Sorry, your request failed. We will look into it.");
       });
     },
@@ -173,7 +171,16 @@ export default new Vuex.Store({
     },
     // Tweeting //
     addTweet(context,tweet) {
-      axios.post("/api/users/" + context.state.user.id + "/tweets",tweet,getAuthHeader()).then(response => {
+      // setup headers
+      let headers = getAuthHeader();
+      headers.headers['Content-Type'] = 'multipart/form-data'
+      // setup form data
+      let formData = new FormData();
+      formData.append('tweet',tweet.tweet);
+      if (tweet.image) {
+	formData.append('image',tweet.image);
+      }
+      axios.post("/api/users/" + context.state.user.id + "/tweets",formData,headers).then(response => {
 	return context.dispatch('getFeed');
       }).catch(err => {
 	console.log("addTweet failed:",err);
