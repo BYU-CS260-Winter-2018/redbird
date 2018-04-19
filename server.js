@@ -46,7 +46,7 @@ const verifyToken = (req, res, next) => {
 const multer = require('multer');
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'static/uploads')
+    cb(null, '/var/www/html/static/uploads')
   },
   filename: (req, file, cb) => {
     cb(null, `${req.userID}-${Date.now()}-${file.originalname}`);
@@ -176,7 +176,7 @@ app.post('/api/users/:id/tweets', verifyToken, upload.single('image'), (req, res
   // check for an image
   let path = ''
   if (req.file)
-    path = req.file.path;
+    path = "/static/uploads/" + req.file.filename;
   knex('users').where('id',id).first().then(user => {
     return knex('tweets').insert({user_id: id, tweet:req.body.tweet, created: new Date(), image:path});
   }).then(ids => {
